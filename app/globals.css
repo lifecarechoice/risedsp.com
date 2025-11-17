@@ -1,0 +1,221 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+	scroll-behavior: smooth;
+}
+
+:root {
+	--navy-900: #0f1a2f;
+	--gold-500: #d9a441;
+}
+
+/* Premium gradient vibe - lighter, more modern */
+.brand-gradient {
+	background: radial-gradient(1200px 600px at 80% -10%, rgba(217,164,65,0.12), transparent 60%),
+		radial-gradient(900px 500px at 0% -20%, rgba(59,130,246,0.15), transparent 50%),
+		linear-gradient(180deg, #1e293b 0%, #334155 40%, #475569 100%);
+	/* Lighter slate gradient for better contrast */
+}
+
+/* Premium button styles */
+.btn {
+	@apply inline-flex items-center justify-center rounded-md transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-gold-500;
+}
+.btn-primary {
+	@apply relative overflow-hidden bg-gold-500 text-navy-900 font-semibold px-6 py-3 shadow-soft hover:shadow-hover hover:translate-y-[-1px];
+}
+.btn-outline {
+	@apply border border-white/30 text-white px-6 py-3 hover:bg-white/10;
+}
+.btn-primary::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.45), transparent 70%);
+	transform: translateX(-100%);
+	transition: transform 600ms ease;
+}
+.btn-primary:hover::after {
+	transform: translateX(100%);
+}
+
+/* Animated subtle grid for hero */
+.hero-grid {
+	background-image:
+		radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.08), transparent 60%),
+		radial-gradient(ellipse at 80% 0%, rgba(217,164,65,0.12), transparent 55%),
+		linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+		linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+	background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+	background-position: 0 0, 0 0, 0 0, 0 0;
+	animation: gridMove 18s linear infinite;
+}
+@keyframes gridMove {
+	0% { background-position: 0 0, 0 0, 0 0, 0 0; }
+	100% { background-position: 0 0, 0 0, 80px 0, 0 80px; }
+}
+
+/* Container */
+.container-premium {
+	@apply mx-auto px-6 md:px-10 lg:px-16 max-w-7xl;
+}
+
+/* Card style */
+.card {
+	@apply relative bg-white rounded-xl shadow-soft hover:shadow-hover transition-all duration-300;
+}
+.card-glass {
+	@apply relative rounded-xl border border-gray-200/60 bg-white/80 backdrop-blur-md shadow-md hover:shadow-xl transition-all duration-300;
+	/* Light glass cards with better visibility */
+}
+/* Justify text in card-glass paragraphs and lists */
+.card-glass p {
+	text-align: justify;
+}
+.card-glass ul {
+	text-align: justify;
+}
+.card-glass li {
+	text-align: justify;
+}
+
+/* Unified RISE card style - used across all sections */
+.rise-card {
+	@apply relative rounded-xl bg-white border border-gold-500/40 shadow-md transition-all duration-300;
+	/* Refined padding - tighter spacing */
+	@apply p-5 md:p-6 h-full flex flex-col;
+}
+/* Desktop hover effects only - prevents interference with mobile taps */
+@media (hover: hover) and (pointer: fine) {
+	.rise-card:hover {
+		@apply shadow-xl -translate-y-1 border-gold-500/70;
+		background-color: #FFFEF9;
+	}
+}
+
+/* Card typography - center-aligned with refined spacing */
+.rise-card {
+	text-align: center;
+	/* Center-align all text inside cards */
+}
+.rise-card h3 {
+	@apply font-semibold text-navy-900 mb-3;
+	text-align: center;
+	line-height: 1.4;
+	/* Center-aligned titles with tighter line-height */
+}
+.rise-card p {
+	@apply text-gray-700;
+	line-height: 1.45;
+	text-align: center;
+	/* Center-aligned paragraphs with tight line-height */
+}
+.rise-card p + p {
+	margin-top: 0.5rem;
+	/* Reduced spacing between paragraphs */
+}
+.rise-card ul {
+	@apply text-gray-700 space-y-1.5;
+	line-height: 1.45;
+	text-align: center;
+	/* Center-aligned lists with tighter spacing */
+}
+.rise-card li {
+	text-align: center;
+	line-height: 1.45;
+}
+/* List items with flex layout - center align the content */
+.rise-card li[class*="flex"] {
+	justify-content: center;
+	align-items: flex-start;
+	text-align: center;
+	display: flex;
+}
+.rise-card li[class*="flex"] span:last-child {
+	text-align: center;
+	line-height: 1.45;
+	flex: 1;
+	max-width: 100%;
+}
+
+/* Wall of Fame cards - uses rise-card with top border accent */
+.card-wall-of-fame {
+	@apply rise-card border-t-2;
+	border-top-color: #C89B3C;
+}
+/* Coming Soon badge spacing - consistent with title */
+.card-wall-of-fame > span:first-child {
+	@apply mb-3;
+	text-align: left;
+	/* Badge remains left-aligned, not center-aligned */
+	display: block;
+}
+
+/* Paragraph justification utility */
+.body-paragraph {
+	text-align: justify;
+}
+.card-gradient {
+	@apply relative;
+}
+.card-gradient::before {
+	content: "";
+	position: absolute;
+	inset: -1px;
+	border-radius: 0.8rem;
+	background: linear-gradient(135deg, rgba(217,164,65,0.45), rgba(15,26,47,0.25));
+	z-index: -1;
+	filter: blur(8px);
+	opacity: 0;
+	transition: opacity 300ms ease;
+}
+.card-gradient:hover::before {
+	opacity: 1;
+}
+
+/* Section spacing */
+.section {
+	@apply py-20 md:py-28;
+}
+.section-dark {
+	@apply py-20 md:py-28 bg-gradient-to-b from-slate-50 via-white to-slate-50/50;
+	/* Light, airy background with subtle gradients */
+}
+.section-dark-alt {
+	@apply py-20 md:py-28 bg-gradient-to-b from-slate-100 via-slate-50 to-white;
+	/* Slightly darker alternate for visual separation */
+}
+
+/* Section header utility for consistent titles/subtitles */
+.section-header h2 {
+	@apply text-3xl md:text-4xl font-bold tracking-tight text-navy-900;
+}
+.section-header p {
+	@apply mt-3 text-gray-700 max-w-3xl;
+}
+
+/* Gold pill */
+.pill {
+	@apply inline-flex items-center gap-2 rounded-full bg-gold-500/10 text-gold-500 px-3 py-1 text-xs font-semibold tracking-wide;
+}
+
+/* Divider band */
+.divider-band {
+	@apply relative;
+}
+.divider-band::after {
+	content: "";
+	position: absolute;
+	inset-inline: 0;
+	bottom: 0;
+	height: 1px;
+	background: linear-gradient(to right, transparent, rgba(15,26,47,0.12), transparent);
+}
+
+/* Subtle text glow for dark hero backgrounds */
+.text-glow {
+	text-shadow: 0 1px 1px rgba(0,0,0,0.35), 0 6px 24px rgba(0,0,0,0.25);
+}
+
