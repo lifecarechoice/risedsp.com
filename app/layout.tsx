@@ -9,11 +9,34 @@ const inter = Inter({
 	display: "swap",
 });
 
-export const metadata: Metadata = {
-	title: "RISE Operations LLC | Odessa–Midland Last-Mile Delivery",
-	description:
-		"Safety-led, people-first, relentlessly reliable. RISE Operations LLC delivers high-performing last-mile operations in the Odessa–Midland area.",
-};
+	export const metadata: Metadata = {
+		title: "RISE Operations LLC | Creating leaders who deliver excellence and drive a lasting impact on society",
+		description:
+			"RISE Operations LLC is a safety-led, people-first logistics operation serving Midland–Odessa and the Permian Basin.",
+		icons: {
+			icon: '/logos/rise-logo-2.png',
+			apple: '/logos/rise-logo-2.png',
+		},
+		openGraph: {
+			title: "RISE Operations LLC | Creating leaders who deliver excellence and drive a lasting impact on society",
+			description: "RISE Operations LLC is a safety-led, people-first logistics operation serving Midland–Odessa and the Permian Basin.",
+			images: [
+				{
+					url: '/logos/rise-logo-3.png',
+					width: 1563,
+					height: 1563,
+					alt: 'RISE Operations LLC',
+				},
+			],
+			type: 'website',
+		},
+		twitter: {
+			card: 'summary_large_image',
+			title: "RISE Operations LLC | Creating leaders who deliver excellence and drive a lasting impact on society",
+			description: "RISE Operations LLC is a safety-led, people-first logistics operation serving Midland–Odessa and the Permian Basin.",
+			images: ['/logos/rise-logo-3.png'],
+		},
+	};
 
 export default function RootLayout({
 	children,

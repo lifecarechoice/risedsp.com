@@ -36,7 +36,8 @@ export default function AccessibilityPage() {
 									<strong>Phone:</strong> <a href="tel:8883337709" className="text-gold-500 hover:text-gold-400 underline">888-333-7709</a>
 								</p>
 								<p>
-									<strong>Location:</strong> Midland, TX
+									<strong>Operating in:</strong> Midland–Odessa, TX<br />
+									<strong>Serving:</strong> Permian Basin Area
 								</p>
 							</div>
 							<p className="mt-4">We will respond promptly and work to improve accessibility features.</p>

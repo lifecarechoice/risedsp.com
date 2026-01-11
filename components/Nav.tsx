@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
+import Logo from "@/components/Logo";
 
 export default function Nav() {
 	const [open, setOpen] = useState(false);
@@ -95,11 +96,8 @@ export default function Nav() {
 	return (
 		<header className="fixed top-0 inset-x-0 z-50 bg-white border-b border-gray-200/60 shadow-sm">
 			<nav className="container-premium flex items-center justify-between py-4 md:py-5">
-				<Link href="/#home" onClick={(e) => handleLinkClick(e, "#home")} className="flex items-center gap-2.5 group flex-shrink-0">
-					<div className="h-3.5 w-3.5 rounded-sm bg-gold-500 group-hover:bg-gold-600 transition-colors shadow-sm"></div>
-					<span className="font-bold tracking-tight text-gray-900 whitespace-nowrap">
-						RISE Operations LLC
-					</span>
+				<Link href="/#home" onClick={(e) => handleLinkClick(e, "#home")} className="flex items-center group flex-shrink-0 hover:opacity-90 transition-opacity">
+					<Logo variant="nav" priority />
 				</Link>
 				<div className="hidden lg:flex items-center gap-1 flex-shrink-0 min-w-0 flex-1 ml-8 md:ml-12">
 					{links.map((l) => {

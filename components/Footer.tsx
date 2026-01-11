@@ -1,5 +1,6 @@
 "use client";
 import { useLanguage } from "@/contexts/LanguageContext";
+import Logo from "@/components/Logo";
 
 export default function Footer() {
 	const { t } = useLanguage();
@@ -9,7 +10,6 @@ export default function Footer() {
 				<div className="grid md:grid-cols-2 gap-8 md:gap-12 mb-8">
 					{/* Company Info */}
 					<div>
-						<h3 className="text-white font-semibold mb-4 text-lg">{t.footer.company}</h3>
 						<div className="space-y-2 text-sm">
 							<p>{t.footer.location}</p>
 							<p>
@@ -18,6 +18,9 @@ export default function Footer() {
 							<p>
 								<a href="mailto:info@risedsp.com" className="hover:text-white transition-colors">{t.footer.email} {t.footer.emailValue}</a>
 							</p>
+						</div>
+						<div className="mt-4 md:mt-6">
+							<Logo variant="footer" />
 						</div>
 					</div>
 

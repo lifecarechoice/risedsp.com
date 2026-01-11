@@ -22,12 +22,6 @@ type JoinForm = {
 	message: string;
 };
 
-type ContactForm = {
-	name: string;
-	email: string;
-	message: string;
-};
-
 export default function HomePage() {
 	const { t, language } = useLanguage();
 	// Hero parallax
@@ -46,14 +40,8 @@ export default function HomePage() {
 		message: "",
 	});
 	const [joinOpen, setJoinOpen] = useState(false);
-
-	// Contact form
-	const [contactForm, setContactForm] = useState<ContactForm>({
-		name: "",
-		email: "",
-		message: "",
-	});
-	const [contactOpen, setContactOpen] = useState(false);
+	const [errors, setErrors] = useState<Partial<Record<keyof JoinForm, string>>>({});
+	const [touched, setTouched] = useState<Partial<Record<keyof JoinForm, boolean>>>({});
 
 	// Persist forms locally
 	useEffect(() => {
@@ -65,6 +53,7 @@ export default function HomePage() {
 
 	useEffect(() => {
 		try {
+			// Store formatted phone number (not normalized) so it displays correctly on reload
 			localStorage.setItem("rise-join-form", JSON.stringify(joinForm));
 		} catch {}
 	}, [joinForm]);
@@ -78,22 +67,154 @@ export default function HomePage() {
 		[]
 	);
 
-	function handleJoinSubmit(e: React.FormEvent<HTMLFormElement>) {
-		e.preventDefault();
-		setJoinOpen(true);
-		// keep local storage as-is for demo
+	// Normalize phone number to digits only for storage
+	function normalizePhone(phone: string): string {
+		return phone.replace(/\D/g, '');
 	}
 
-	function handleContactSubmit(e: React.FormEvent<HTMLFormElement>) {
+	// Format phone number for display
+	function formatPhone(phone: string): string {
+		const digits = normalizePhone(phone);
+		if (digits.length === 0) return '';
+		if (digits.length <= 3) return `(${digits}`;
+		if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+		return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+	}
+
+	// Validation functions
+	function validateName(name: string): string | undefined {
+		if (!name.trim()) {
+			return "Full Name is required";
+		}
+		if (name.trim().length < 2) {
+			return "Full Name must be at least 2 characters";
+		}
+		return undefined;
+	}
+
+	function validateEmail(email: string): string | undefined {
+		if (!email.trim()) {
+			return "Email is required";
+		}
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(email)) {
+			return "Please enter a valid email address";
+		}
+		return undefined;
+	}
+
+	function validatePhone(phone: string): string | undefined {
+		const digits = normalizePhone(phone);
+		if (digits.length === 0) {
+			return "Phone is required";
+		}
+		if (digits.length < 10) {
+			return "Please enter a valid phone number";
+		}
+		return undefined;
+	}
+
+	function validateDropdown(value: string, fieldName: string, defaultOption: string): string | undefined {
+		if (!value || value === defaultOption || value === "Select") {
+			return `${fieldName} is required`;
+		}
+		return undefined;
+	}
+
+	// Validate all fields
+	function validateForm(form: JoinForm): Partial<Record<keyof JoinForm, string>> {
+		const newErrors: Partial<Record<keyof JoinForm, string>> = {};
+		
+		const nameError = validateName(form.name);
+		if (nameError) newErrors.name = nameError;
+		
+		const emailError = validateEmail(form.email);
+		if (emailError) newErrors.email = emailError;
+		
+		const phoneError = validatePhone(form.phone);
+		if (phoneError) newErrors.phone = phoneError;
+		
+		const ageError = validateDropdown(form.age, "Age", "Select");
+		if (ageError) newErrors.age = ageError;
+		
+		// License and outdoor always have values (no "Select" option), so they don't need validation
+		// But we validate they're not empty just to be safe
+		if (!form.license || form.license.trim() === "") {
+			newErrors.license = "License question is required";
+		}
+		if (!form.outdoor || form.outdoor.trim() === "") {
+			newErrors.outdoor = "Outdoor question is required";
+		}
+		
+		return newErrors;
+	}
+
+	// Handle field blur
+	function handleBlur(fieldName: keyof JoinForm) {
+		setTouched({ ...touched, [fieldName]: true });
+		const fieldErrors = validateForm(joinForm);
+		if (fieldErrors[fieldName]) {
+			setErrors({ ...errors, [fieldName]: fieldErrors[fieldName] });
+		} else {
+			const newErrors = { ...errors };
+			delete newErrors[fieldName];
+			setErrors(newErrors);
+		}
+	}
+
+	function handleJoinSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
-		setContactOpen(true);
+		
+		// Mark all fields as touched
+		const allTouched = {
+			name: true,
+			email: true,
+			phone: true,
+			age: true,
+			license: true,
+			outdoor: true,
+			message: true,
+		};
+		setTouched(allTouched);
+		
+		// Validate form
+		const formErrors = validateForm(joinForm);
+		setErrors(formErrors);
+		
+		// If there are errors, don't submit
+		if (Object.keys(formErrors).length > 0) {
+			return;
+		}
+		
+		// Store normalized phone number
+		const normalizedForm = {
+			...joinForm,
+			phone: normalizePhone(joinForm.phone),
+		};
+		
+		setJoinOpen(true);
+		// keep local storage as-is for demo (with normalized phone)
+	}
+
+	function handleScrollToJoinTeam(e: React.MouseEvent<HTMLAnchorElement>) {
+		e.preventDefault();
+		const element = document.querySelector("#join-our-team");
+		if (element) {
+			const headerOffset = 80;
+			const elementPosition = element.getBoundingClientRect().top;
+			const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+			window.scrollTo({
+				top: offsetPosition,
+				behavior: "smooth"
+			});
+		}
 	}
 
 	return (
 		<>
 			<section
 				id="home"
-				className="relative min-h-screen bg-navy-900 hero-grid brand-gradient overflow-hidden"
+				className="relative min-h-screen bg-navy-900 hero-grid overflow-hidden"
 				onMouseMove={(e) => {
 					const { innerWidth, innerHeight } = window;
 					const x = ((e.clientX - innerWidth / 2) / innerWidth) * 12;
@@ -103,7 +224,22 @@ export default function HomePage() {
 				}}
 			>
 				<div className="absolute inset-0 pointer-events-none">
-					<div className="absolute inset-0 bg-gradient-to-b from-navy-900/75 via-navy-900/80 to-navy-900/85" />
+					{/* Background image with subtle filter effect */}
+					<div 
+						className="absolute inset-0"
+						style={{
+							backgroundImage: 'url("/RISE Cover.png")',
+							backgroundSize: 'cover',
+							backgroundPosition: 'center',
+							backgroundRepeat: 'no-repeat',
+							filter: 'brightness(0.7) contrast(1.15) blur(0.5px)',
+							WebkitFilter: 'brightness(0.7) contrast(1.15) blur(0.5px)'
+						}}
+					/>
+					{/* Dark gradient overlay for text readability - subtle and elegant */}
+					<div className="absolute inset-0 bg-gradient-to-b from-navy-900/60 via-navy-900/50 to-navy-900/65" />
+					{/* Additional subtle overlay layer for depth */}
+					<div className="absolute inset-0 bg-black/10" />
 					<div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-gold-500/10 blur-3xl" />
 					<AnimatedVans />
 					<LogisticsBG />
@@ -346,14 +482,6 @@ export default function HomePage() {
 								title: t.wallOfFame.card3Title, 
 								desc: t.wallOfFame.card3Desc
 							},
-							{ 
-								title: t.wallOfFame.card4Title, 
-								desc: t.wallOfFame.card4Desc
-							},
-							{ 
-								title: t.wallOfFame.card5Title, 
-								desc: t.wallOfFame.card5Desc
-							},
 						].map((c, i) => (
 							<Reveal key={c.title} delay={i * 0.06}>
 							<div className="card-wall-of-fame">
@@ -380,9 +508,6 @@ export default function HomePage() {
 							<p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-4 body-paragraph">
 								{t.careers.intro}
 							</p>
-							<p className="text-sm text-gray-500 italic mt-6">
-								{t.careers.note}
-							</p>
 						</div>
 					</Reveal>
 					<div className="mt-10 md:mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -390,17 +515,20 @@ export default function HomePage() {
 							{
 								badge: t.careers.coming2026,
 								title: t.careers.role1Title,
-								description: t.careers.role1Desc
+								description: t.careers.role1Desc,
+								buttonText: t.careers.applyComingSoon
 							},
 							{
 								badge: t.careers.coming2026,
 								title: t.careers.role2Title,
-								description: t.careers.role2Desc
+								description: t.careers.role2Desc,
+								buttonText: t.careers.joinTalentPool
 							},
 							{
 								badge: t.careers.coming2026,
 								title: t.careers.role3Title,
-								description: t.careers.role3Desc
+								description: t.careers.role3Desc,
+								buttonText: t.careers.joinTalentPool
 							}
 						].map((role, i) => (
 							<Reveal key={role.title} delay={i * 0.06}>
@@ -410,23 +538,17 @@ export default function HomePage() {
 									</span>
 									<h3 className="text-lg font-semibold text-navy-900">{role.title}</h3>
 									<p className="text-gray-700 flex-grow">{role.description}</p>
-									<button 
-										disabled
-										className="mt-6 w-full px-4 py-2.5 rounded-lg border-2 border-gray-300 text-gray-500 font-semibold cursor-not-allowed opacity-60 transition-all"
+									<a 
+										href="#join-our-team"
+										onClick={handleScrollToJoinTeam}
+										className="mt-6 w-full inline-block text-center px-4 py-2.5 rounded-lg bg-gold-500 hover:bg-gold-600 text-white font-semibold transition-all"
 									>
-										{t.careers.applyComingSoon}
-									</button>
+										{role.buttonText}
+									</a>
 								</div>
 							</Reveal>
 						))}
 					</div>
-					<Reveal delay={0.18}>
-						<div className="mt-12 md:mt-16 text-center">
-							<p className="text-sm text-gray-500 italic">
-								{t.careers.closingNote}
-							</p>
-						</div>
-					</Reveal>
 				</div>
 			</section>
 
@@ -434,122 +556,134 @@ export default function HomePage() {
 				<div className="container-premium">
 					<Reveal>
 						<div className="max-w-4xl">
-							<h2 className="text-3xl md:text-4xl font-bold text-navy-900">{t.joinTeam.title}</h2>
-							<div className="mt-3 space-y-3 text-gray-700">
-								<p>
+							<h2 className="text-3xl md:text-4xl font-bold text-navy-900 mb-6">{t.joinTeam.title}</h2>
+							<div className="space-y-4 text-gray-700">
+								<p className="text-lg md:text-xl leading-relaxed">
 									{t.joinTeam.description1}
 								</p>
-								<p>
+								<p className="text-lg md:text-xl leading-relaxed font-medium text-navy-900">
 									{t.joinTeam.description2}
 								</p>
 							</div>
 						</div>
 					</Reveal>
-					<form onSubmit={handleJoinSubmit} className="mt-8 max-w-4xl card-glass p-8">
-						<div className="grid md:grid-cols-2 gap-6">
-							<div>
-								<label className="block text-sm font-medium text-navy-900 mb-2">{t.joinTeam.form.fullName}</label>
-								<input className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-400 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all"
-									value={joinForm.name} onChange={(e) => setJoinForm({ ...joinForm, name: e.target.value })} required />
+					<Reveal delay={0.06}>
+						<div className="mt-8 max-w-4xl card-glass p-8 md:p-10 border-t-4 border-gold-500">
+							<h3 className="text-2xl md:text-3xl font-semibold text-navy-900 mb-6">How to Apply</h3>
+							<p className="text-gray-700 mb-8 text-lg leading-relaxed">
+								We're currently accepting applications by email. Please review the requirements below before emailing your application.
+							</p>
+							<div className="bg-gold-500/10 border border-gold-500/30 rounded-lg p-4 mb-8">
+								<p className="text-navy-900 font-semibold">
+									Use this subject line: <span className="font-mono text-sm bg-white/60 px-2 py-1 rounded">"RISE Application – [Full Name]"</span>
+								</p>
 							</div>
-							<div>
-								<label className="block text-sm font-medium text-navy-900 mb-2">{t.joinTeam.form.email}</label>
-								<input type="email" className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-400 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all"
-									value={joinForm.email} onChange={(e) => setJoinForm({ ...joinForm, email: e.target.value })} required />
+							<div className="mb-8 bg-slate-50 rounded-lg p-6 border border-gray-200/60">
+								<p className="text-navy-900 font-semibold mb-4 text-lg">Your email must include:</p>
+								<ul className="space-y-3 text-gray-700">
+									<li className="flex items-start">
+										<span className="text-gold-500 mr-3 mt-1">•</span>
+										<span>Full name</span>
+									</li>
+									<li className="flex items-start">
+										<span className="text-gold-500 mr-3 mt-1">•</span>
+										<span>Phone number</span>
+									</li>
+									<li className="flex items-start">
+										<span className="text-gold-500 mr-3 mt-1">•</span>
+										<span>
+											Role you're applying for (choose one):
+											<ul className="mt-2 ml-4 space-y-2">
+												<li className="flex items-start">
+													<span className="text-gold-500/70 mr-2 mt-1">–</span>
+													<span>Delivery Driver</span>
+												</li>
+												<li className="flex items-start">
+													<span className="text-gold-500/70 mr-2 mt-1">–</span>
+													<span>Operations Supervisor (Talent Pool)</span>
+												</li>
+												<li className="flex items-start">
+													<span className="text-gold-500/70 mr-2 mt-1">–</span>
+													<span>Operations Manager (Talent Pool)</span>
+												</li>
+											</ul>
+										</span>
+									</li>
+									<li className="flex items-start">
+										<span className="text-gold-500 mr-3 mt-1">•</span>
+										<span>Resume attached (PDF preferred)</span>
+									</li>
+								</ul>
 							</div>
-							<div>
-								<label className="block text-sm font-medium text-navy-900 mb-2">{t.joinTeam.form.phone}</label>
-								<input className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-400 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all"
-									value={joinForm.phone} onChange={(e) => setJoinForm({ ...joinForm, phone: e.target.value })} required />
-							</div>
-							<div className="relative">
-								<label className="block text-sm font-medium text-navy-900 mb-2">{t.joinTeam.form.ageQuestion}</label>
-								<select className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all appearance-none cursor-pointer"
-									value={joinForm.age} onChange={(e) => setJoinForm({ ...joinForm, age: e.target.value })}>
-									<option value="Select">{t.joinTeam.form.select}</option>
-									<option value="Yes">{t.joinTeam.form.yes}</option>
-									<option value="No">{t.joinTeam.form.no}</option>
-								</select>
-								<div className="absolute right-3 top-[38px] pointer-events-none">
-									<svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-									</svg>
-								</div>
-							</div>
-							<div className="relative">
-								<label className="block text-sm font-medium text-navy-900 mb-2">{t.joinTeam.form.licenseQuestion}</label>
-								<select className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all appearance-none cursor-pointer"
-									value={joinForm.license} onChange={(e) => setJoinForm({ ...joinForm, license: e.target.value })}>
-									<option value="Yes">{t.joinTeam.form.yes}</option>
-									<option value="No">{t.joinTeam.form.no}</option>
-								</select>
-								<div className="absolute right-3 top-[38px] pointer-events-none">
-									<svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-									</svg>
-								</div>
-							</div>
-							<div className="relative">
-								<label className="block text-sm font-medium text-navy-900 mb-2">{t.joinTeam.form.outdoorQuestion}</label>
-								<select className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all appearance-none cursor-pointer"
-									value={joinForm.outdoor} onChange={(e) => setJoinForm({ ...joinForm, outdoor: e.target.value })}>
-									<option value="Yes">{t.joinTeam.form.yes}</option>
-									<option value="No">{t.joinTeam.form.no}</option>
-								</select>
-								<div className="absolute right-3 top-[38px] pointer-events-none">
-									<svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-									</svg>
-								</div>
+							<p className="text-gray-700 mb-8 text-lg leading-relaxed">
+								Once you have all the required information ready, email your resume using the button below.
+							</p>
+							<div className="flex justify-start">
+								<a 
+									href="mailto:info@risedsp.com?subject=RISE%20Operations%20Application"
+									className="btn btn-primary text-lg px-8 py-4"
+								>
+									Email Your Resume
+								</a>
 							</div>
 						</div>
-						<div className="mt-6">
-							<label className="block text-sm font-medium text-navy-900 mb-2">{t.joinTeam.form.message}</label>
-							<textarea rows={4} className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-400 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all resize-none"
-								value={joinForm.message} onChange={(e) => setJoinForm({ ...joinForm, message: e.target.value })} />
-						</div>
-						<div className="mt-6">
-							<button className="btn btn-primary">{t.joinTeam.form.submit}</button>
-						</div>
-					</form>
+					</Reveal>
 				</div>
 			</section>
 
 			<section id="contact" className="section-dark">
 				<div className="container-premium">
 					<Reveal>
-						<h2 className="text-3xl md:text-4xl font-bold text-navy-900">{t.contact.title}</h2>
+						<h2 className="text-3xl md:text-4xl font-bold text-navy-900 mb-2">{t.contact.title}</h2>
 					</Reveal>
-					<div className="mt-8 grid md:grid-cols-2 gap-6">
-						<Reveal>
-							<div className="card-glass p-6">
-							<h3 className="text-lg font-semibold text-navy-900">{t.contact.companyName}</h3>
-							<ul className="mt-4 space-y-3 text-gray-700">
-								<li><span className="font-medium text-navy-900">{t.contact.email}</span> {t.contact.emailValue}</li>
-								<li><span className="font-medium text-navy-900">{t.contact.location}</span> {t.contact.locationValue}</li>
-								<li><span className="font-medium text-navy-900">{t.contact.services}</span> {t.contact.servicesValue}</li>
-							</ul>
-						</div>
-						</Reveal>
+					<Reveal delay={0.03}>
+						<p className="text-lg text-gray-600 mb-8">{t.contact.subtitle}</p>
+					</Reveal>
+					<div className="mt-8 max-w-3xl">
 						<Reveal delay={0.06}>
-							<form onSubmit={handleContactSubmit} className="card-glass p-6">
-							<div>
-								<label className="block text-sm font-medium text-navy-900 mb-2">{t.contact.form.name}</label>
-								<input className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-400 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all"
-									value={contactForm.name} onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })} required />
+							<div className="card-glass p-8 md:p-10">
+								<h3 className="text-xl md:text-2xl font-semibold text-navy-900 mb-6">{t.contact.companyName}</h3>
+								<div className="space-y-6">
+									<div className="flex flex-col sm:flex-row sm:items-start gap-3">
+										<div className="flex-shrink-0">
+											<svg className="w-6 h-6 text-gold-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+											</svg>
+										</div>
+										<div className="flex-1">
+											<p className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-1">{t.contact.email}</p>
+											<a href={`mailto:${t.contact.emailValue}`} className="text-lg text-navy-900 hover:text-gold-500 transition-colors font-medium">
+												{t.contact.emailValue}
+											</a>
+										</div>
+									</div>
+									<div className="flex flex-col sm:flex-row sm:items-start gap-3">
+										<div className="flex-shrink-0">
+											<svg className="w-6 h-6 text-gold-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+											</svg>
+										</div>
+										<div className="flex-1">
+											<p className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-1">{t.contact.phone}</p>
+											<a href={`tel:${t.contact.phoneValue.replace(/-/g, '')}`} className="text-lg text-navy-900 hover:text-gold-500 transition-colors font-medium">
+												{t.contact.phoneValue}
+											</a>
+										</div>
+									</div>
+									<div className="flex flex-col sm:flex-row sm:items-start gap-3">
+										<div className="flex-shrink-0">
+											<svg className="w-6 h-6 text-gold-500 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+											</svg>
+										</div>
+										<div className="flex-1">
+											<p className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-1">{t.contact.location}</p>
+											<p className="text-lg text-navy-900 font-medium">{t.contact.locationValue}</p>
+										</div>
+									</div>
+								</div>
 							</div>
-							<div className="mt-4">
-								<label className="block text-sm font-medium text-navy-900 mb-2">{t.contact.form.email}</label>
-								<input type="email" className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-400 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all"
-									value={contactForm.email} onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })} required />
-							</div>
-							<div className="mt-4">
-								<label className="block text-sm font-medium text-navy-900 mb-2">{t.contact.form.message}</label>
-								<textarea rows={4} className="w-full rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-400 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all resize-none"
-									value={contactForm.message} onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })} required />
-							</div>
-							<button className="btn btn-primary mt-6 w-full md:w-auto">{t.contact.form.submit}</button>
-						</form>
 						</Reveal>
 					</div>
 				</div>
@@ -562,12 +696,6 @@ export default function HomePage() {
 				onClose={() => setJoinOpen(false)}
 				title={t.modal.applicationReceived}
 				message={t.modal.applicationMessage}
-			/>
-			<Modal
-				open={contactOpen}
-				onClose={() => setContactOpen(false)}
-				title={t.modal.messageSent}
-				message={t.modal.messageSentText}
 			/>
 		</>
 	);
