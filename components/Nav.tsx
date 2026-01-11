@@ -95,7 +95,7 @@ export default function Nav() {
 
 	return (
 		<header className="fixed top-0 inset-x-0 z-50 bg-white border-b border-gray-200/60 shadow-sm">
-			<nav className="container-premium flex items-center justify-between py-4 md:py-5">
+			<nav className="container-premium flex items-center justify-between py-1 md:py-2">
 				<Link href="/#home" onClick={(e) => handleLinkClick(e, "#home")} className="flex items-center group flex-shrink-0 hover:opacity-90 transition-opacity">
 					<Logo variant="nav" priority />
 				</Link>

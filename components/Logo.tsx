@@ -17,7 +17,7 @@ export default function Logo({
 	const logoPath = variant === "footer" ? "/logos/rise-logo-4.png" : "/logos/rise-logo-3.png";
 	
 	// Larger sizes for better visibility
-	const heightClass = variant === "footer" ? "h-16 md:h-20 lg:h-24" : "h-12 md:h-14 lg:h-[78px]";
+	const heightClass = variant === "footer" ? "h-16 md:h-20 lg:h-24" : "h-12 md:h-14 lg:h-[68px]";
 
 	if (variant === "footer") {
 		// Footer: Logo aligned perfectly to left edge matching text
