@@ -306,7 +306,14 @@ export default function HomePage() {
 					<div className="mt-16 md:mt-20 grid md:grid-cols-2 gap-6 md:gap-8">
 						<Reveal>
 							<div className="rise-card">
-								<h3 className="text-xl md:text-2xl font-bold text-navy-900">{t.about.ownerTitle}</h3>
+								<div className="flex flex-col items-center mb-6">
+									<img 
+										src="/ach-headshot.JPG" 
+										alt="Achraf Bousmah - Owner and General Manager" 
+										className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-gold-500/30 shadow-lg"
+									/>
+									<h3 className="text-xl md:text-2xl font-bold text-navy-900 mt-4 text-center">{t.about.ownerTitle}</h3>
+								</div>
 								<p className="text-gray-700 flex-grow">
 									{t.about.ownerIntro}
 								</p>
@@ -332,7 +339,14 @@ export default function HomePage() {
 						</Reveal>
 						<Reveal delay={0.08}>
 							<div className="rise-card">
-								<h3 className="text-xl md:text-2xl font-bold text-navy-900">{t.about.deliverTitle}</h3>
+								<div className="flex flex-col items-center mb-6">
+									<img 
+										src="/logos/rise-logo-1.png" 
+										alt="RISE Operations LLC" 
+										className="w-32 h-32 md:w-40 md:h-40 object-contain"
+									/>
+									<h3 className="text-xl md:text-2xl font-bold text-navy-900 mt-4 text-center">{t.about.deliverTitle}</h3>
+								</div>
 								<p className="text-gray-700 flex-grow">
 									{t.about.deliverIntro}
 								</p>

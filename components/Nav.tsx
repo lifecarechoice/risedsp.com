@@ -165,6 +165,29 @@ export default function Nav() {
 						</button>
 					</div>
 				</div>
+				{/* Mobile Language Toggle - Visible on mobile, hidden on desktop */}
+				<div className="lg:hidden flex items-center gap-1.5 mr-2 flex-shrink-0">
+					<button
+						onClick={() => handleLanguageChange("en")}
+						className={`px-2.5 py-1.5 text-xs font-semibold rounded-full transition-all duration-200 whitespace-nowrap ${
+							language === "en"
+								? "bg-gold-500 text-navy-900 shadow-sm"
+								: "bg-transparent text-gray-600 border border-gray-300 hover:bg-gray-50 hover:text-gray-900"
+						}`}
+					>
+						EN 🇺🇸
+					</button>
+					<button
+						onClick={() => handleLanguageChange("es")}
+						className={`px-2.5 py-1.5 text-xs font-semibold rounded-full transition-all duration-200 whitespace-nowrap ${
+							language === "es"
+								? "bg-gold-500 text-navy-900 shadow-sm"
+								: "bg-transparent text-gray-600 border border-gray-300 hover:bg-gray-50 hover:text-gray-900"
+						}`}
+					>
+						ES 🇪🇸
+					</button>
+				</div>
 				<button 
 					className="lg:hidden p-2 rounded-lg transition-colors text-gray-900 hover:bg-gray-100"
 					onClick={() => setOpen((v) => !v)} 
@@ -215,29 +238,6 @@ export default function Nav() {
 									</Link>
 								);
 							})}
-							{/* Language Toggle - Mobile */}
-							<div className="flex items-center gap-2 mt-4 justify-center">
-								<button
-									onClick={() => handleLanguageChange("en")}
-									className={`px-4 py-2 text-xs font-semibold rounded-full transition-all duration-200 ${
-										language === "en"
-											? "bg-gold-500 text-navy-900 shadow-sm"
-											: "bg-transparent text-gray-600 border border-gray-300 hover:bg-gray-50 hover:text-gray-900"
-									}`}
-								>
-									English 🇺🇸
-								</button>
-								<button
-									onClick={() => handleLanguageChange("es")}
-									className={`px-4 py-2 text-xs font-semibold rounded-full transition-all duration-200 ${
-										language === "es"
-											? "bg-gold-500 text-navy-900 shadow-sm"
-											: "bg-transparent text-gray-600 border border-gray-300 hover:bg-gray-50 hover:text-gray-900"
-									}`}
-								>
-									Español 🇪🇸
-								</button>
-							</div>
 							<Link 
 								href="/#join-our-team" 
 								onClick={(e) => {
