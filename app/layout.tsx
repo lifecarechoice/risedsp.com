@@ -20,9 +20,10 @@ const inter = Inter({
 		openGraph: {
 			title: "RISE Operations LLC | Creating leaders who deliver excellence and drive a lasting impact on society",
 			description: "RISE Operations LLC is a safety-led, people-first logistics operation serving Midland–Odessa and the Permian Basin.",
+			url: 'https://risedsp.com',
 			images: [
 				{
-					url: '/logos/rise-logo-3.png',
+					url: 'https://risedsp.com/logos/rise-logo-3.png',
 					width: 1563,
 					height: 1563,
 					alt: 'RISE Operations LLC',
@@ -34,7 +35,7 @@ const inter = Inter({
 			card: 'summary_large_image',
 			title: "RISE Operations LLC | Creating leaders who deliver excellence and drive a lasting impact on society",
 			description: "RISE Operations LLC is a safety-led, people-first logistics operation serving Midland–Odessa and the Permian Basin.",
-			images: ['/logos/rise-logo-3.png'],
+			images: ['https://risedsp.com/logos/rise-logo-3.png'],
 		},
 	};
 
