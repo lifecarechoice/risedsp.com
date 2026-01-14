@@ -17,7 +17,7 @@ export default function Logo({
 	const logoPath = variant === "footer" ? "/logos/rise-logo-4.png" : "/logos/rise-logo-3.png";
 	
 	// Larger sizes for better visibility
-	const heightClass = variant === "footer" ? "h-16 md:h-20 lg:h-24" : "h-12 md:h-14 lg:h-[68px]";
+	const heightClass = variant === "footer" ? "h-16 md:h-20 lg:h-24" : "h-12 md:h-14 lg:h-16";
 
 	if (variant === "footer") {
 		// Footer: Logo aligned perfectly to left edge matching text
@@ -47,7 +47,7 @@ export default function Logo({
 
 	// Navigation: Centered logo
 	return (
-		<div className={`${heightClass} flex items-center justify-center`} style={{ width: 'auto', overflow: 'visible' }}>
+		<div className={`${heightClass} flex items-center justify-center`}>
 			<Image
 				src={logoPath}
 				alt="RISE Operations LLC"
@@ -55,12 +55,6 @@ export default function Logo({
 				height={200}
 				className={`${heightClass} w-auto object-contain ${className}`}
 				priority={priority}
-				style={{ 
-					objectPosition: 'center center',
-					transform: 'scale(2)',
-					transformOrigin: 'center center',
-					display: 'block'
-				}}
 				{...props}
 			/>
 		</div>

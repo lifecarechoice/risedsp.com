@@ -95,7 +95,7 @@ export default function Nav() {
 
 	return (
 		<header className="fixed top-0 inset-x-0 z-50 bg-white border-b border-gray-200/60 shadow-sm">
-			<nav className="container-premium flex items-center justify-between py-1 md:py-2">
+			<nav className="container-premium flex items-center justify-between py-2.5 md:py-3">
 				<Link href="/#home" onClick={(e) => handleLinkClick(e, "#home")} className="flex items-center group flex-shrink-0 hover:opacity-90 transition-opacity">
 					<Logo variant="nav" priority />
 				</Link>
@@ -165,6 +165,14 @@ export default function Nav() {
 						</button>
 					</div>
 				</div>
+				{/* Mobile Join Our Team Button - Visible on mobile, hidden on desktop */}
+				<Link 
+					href="/#join-our-team" 
+					onClick={(e) => handleLinkClick(e, "#join-our-team")}
+					className="lg:hidden btn btn-primary text-xs font-semibold px-3 py-1.5 shadow-lg hover:shadow-xl transition-all duration-300 whitespace-nowrap flex-shrink-0 shadow-gold-500/20 mr-2"
+				>
+					{t.nav.joinOurTeam}
+				</Link>
 				{/* Mobile Language Toggle - Visible on mobile, hidden on desktop */}
 				<div className="lg:hidden flex items-center gap-1.5 mr-2 flex-shrink-0">
 					<button
