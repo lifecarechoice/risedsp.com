@@ -584,61 +584,61 @@ export default function HomePage() {
 					</Reveal>
 					<Reveal delay={0.06}>
 						<div className="mt-8 max-w-4xl card-glass p-8 md:p-10 border-t-4 border-gold-500">
-							<h3 className="text-2xl md:text-3xl font-semibold text-navy-900 mb-6">How to Apply</h3>
+							<h3 className="text-2xl md:text-3xl font-semibold text-navy-900 mb-6">{t.joinTeam.howToApply.title}</h3>
 							<p className="text-gray-700 mb-8 text-lg leading-relaxed">
-								We're currently accepting applications by email. Please review the requirements below before emailing your application.
+								{t.joinTeam.howToApply.intro}
 							</p>
 							<div className="bg-gold-500/10 border border-gold-500/30 rounded-lg p-4 mb-8">
 								<p className="text-navy-900 font-semibold">
-									Use this subject line: <span className="font-mono text-sm bg-white/60 px-2 py-1 rounded">"RISE Application – [Full Name]"</span>
+									{t.joinTeam.howToApply.subjectLabel} <span className="font-mono text-sm bg-white/60 px-2 py-1 rounded">"{t.joinTeam.howToApply.subjectValue}"</span>
 								</p>
 							</div>
 							<div className="mb-8 bg-slate-50 rounded-lg p-6 border border-gray-200/60">
-								<p className="text-navy-900 font-semibold mb-4 text-lg">Your email must include:</p>
+								<p className="text-navy-900 font-semibold mb-4 text-lg">{t.joinTeam.howToApply.emailMustInclude}</p>
 								<ul className="space-y-3 text-gray-700">
 									<li className="flex items-start">
 										<span className="text-gold-500 mr-3 mt-1">•</span>
-										<span>Full name</span>
+										<span>{t.joinTeam.howToApply.fullName}</span>
 									</li>
 									<li className="flex items-start">
 										<span className="text-gold-500 mr-3 mt-1">•</span>
-										<span>Phone number</span>
+										<span>{t.joinTeam.howToApply.phoneNumber}</span>
 									</li>
 									<li className="flex items-start">
 										<span className="text-gold-500 mr-3 mt-1">•</span>
 										<span>
-											Role you're applying for (choose one):
+											{t.joinTeam.howToApply.roleLabel}
 											<ul className="mt-2 ml-4 space-y-2">
 												<li className="flex items-start">
 													<span className="text-gold-500/70 mr-2 mt-1">–</span>
-													<span>Delivery Driver</span>
+													<span>{t.joinTeam.howToApply.role1}</span>
 												</li>
 												<li className="flex items-start">
 													<span className="text-gold-500/70 mr-2 mt-1">–</span>
-													<span>Operations Supervisor (Talent Pool)</span>
+													<span>{t.joinTeam.howToApply.role2}</span>
 												</li>
 												<li className="flex items-start">
 													<span className="text-gold-500/70 mr-2 mt-1">–</span>
-													<span>Operations Manager (Talent Pool)</span>
+													<span>{t.joinTeam.howToApply.role3}</span>
 												</li>
 											</ul>
 										</span>
 									</li>
 									<li className="flex items-start">
 										<span className="text-gold-500 mr-3 mt-1">•</span>
-										<span>Resume attached (PDF preferred)</span>
+										<span>{t.joinTeam.howToApply.resume}</span>
 									</li>
 								</ul>
 							</div>
 							<p className="text-gray-700 mb-8 text-lg leading-relaxed">
-								Once you have all the required information ready, email your resume using the button below.
+								{t.joinTeam.howToApply.closing}
 							</p>
 							<div className="flex justify-start">
 								<a 
 									href="mailto:info@risedsp.com?subject=RISE%20Operations%20Application"
 									className="btn btn-primary text-lg px-8 py-4"
 								>
-									Email Your Resume
+									{t.joinTeam.howToApply.button}
 								</a>
 							</div>
 						</div>
