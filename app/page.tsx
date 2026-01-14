@@ -344,7 +344,7 @@ export default function HomePage() {
 									<img 
 										src="/logos/rise-logo-1.png" 
 										alt="RISE Operations LLC" 
-										className="w-32 h-32 md:w-40 md:h-40 object-contain"
+										className="w-40 h-40 md:w-48 md:h-48 object-contain"
 									/>
 									<h3 className="text-xl md:text-2xl font-bold text-navy-900 mt-4 text-center">{t.about.deliverTitle}</h3>
 								</div>
