@@ -47,7 +47,7 @@ export default function Logo({
 
 	// Navigation: Centered logo
 	return (
-		<div className={`${heightClass} flex items-center justify-center`}>
+		<div className={`${heightClass} flex items-center justify-center`} style={{ maxHeight: '100%' }}>
 			<Image
 				src={logoPath}
 				alt="RISE Operations LLC"
@@ -55,6 +55,7 @@ export default function Logo({
 				height={200}
 				className={`${heightClass} w-auto object-contain ${className}`}
 				priority={priority}
+				style={{ maxHeight: '100%', height: 'auto' }}
 				{...props}
 			/>
 		</div>
