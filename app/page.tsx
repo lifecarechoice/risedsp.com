@@ -309,10 +309,11 @@ export default function HomePage() {
 								<div className="flex flex-col items-center mb-6">
 									<img 
 										src="/ach-headshot.JPG" 
-										alt="Achraf Bousmah - Owner and General Manager" 
+										alt="Achraf Bousmah - Founder & Chief Operating Officer" 
 										className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-gold-500/30 shadow-lg"
 									/>
-									<h3 className="text-xl md:text-2xl font-bold text-navy-900 mt-4 text-center">{t.about.ownerTitle}</h3>
+									<h2 className="text-2xl md:text-3xl font-bold text-navy-900 mt-4 text-center">Achraf Bousmah</h2>
+									<h3 className="text-lg md:text-xl font-semibold text-gold-600 mt-2 text-center">{t.about.ownerTitle}</h3>
 								</div>
 								<p className="text-gray-700 flex-grow">
 									{t.about.ownerIntro}
